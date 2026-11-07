@@ -1,0 +1,13 @@
+{
+  "pollSeconds": 5,
+  "rules": [
+    {
+      "display": { "serial": 123456789, "label": "Samsung Odyssey G7 32in behind a Dell WD22TB4 dock" },
+      "prefer": ["2560x1440@165 hidpi", "2560x1440@60 hidpi"]
+    },
+    {
+      "display": { "name": "DELL U2723QE" },
+      "prefer": ["2560x1440@60 hidpi"]
+    }
+  ]
+}
