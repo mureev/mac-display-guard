@@ -105,7 +105,8 @@ Note the time your screen was black; the last `signal sent` before it is the sus
 - It never touches a display that doesn't match a rule, and never switches when none of your preferred modes is offered.
 - If a switch fails three times in a row, it leaves that display alone for 5 minutes instead of fighting the OS.
 - It holds no power assertions: your Mac and displays sleep exactly as before.
-- Log: `~/Library/Logs/mac-display-guard.log` (only changes and actions).
+- Measured on the test Mac: CPU too small for `ps` to show (0.00 s over 30 s), about 17 MB of memory. Forcing the black mode by hand, the guard had the display back on its preferred mode within 2 seconds.
+- Log: `~/Library/Logs/mac-display-guard.log` (only changes and actions). `mac-display-guard run --verbose` in a terminal also prints every display and wake event.
 
 ## Limits
 

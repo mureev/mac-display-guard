@@ -15,7 +15,8 @@ USAGE
   mac-display-guard check [--dry-run]    apply the config once
   mac-display-guard install              run in the background (per-user LaunchAgent)
   mac-display-guard status | restart | uninstall
-  mac-display-guard run                  the background loop (what the LaunchAgent runs)
+  mac-display-guard run [--verbose]      the background loop (what the LaunchAgent runs);
+                                         --verbose also prints every display and wake event
 
 OPTIONS
   --config PATH                          default: ~/.config/mac-display-guard/config.json
@@ -165,7 +166,9 @@ case "diagnose":
     status = Diagnose.run(last: last, showAll: takeFlag("--all"))
 case "init": status = cmdInit(force: takeFlag("--force"))
 case "check": status = cmdCheck(dryRun: takeFlag("--dry-run"))
-case "run": cmdRun()
+case "run":
+    verbose = takeFlag("--verbose")
+    cmdRun()
 case "install": status = Install.install()
 case "uninstall": status = Install.uninstall()
 case "restart": status = Install.restart()

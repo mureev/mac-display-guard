@@ -2,6 +2,9 @@ import AppKit
 import CoreGraphics
 import DisplayGuardCore
 
+/// `run --verbose`: also log every display/wake event and scheduled check.
+var verbose = false
+
 func log(_ message: String) {
     let f = DateFormatter()
     f.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -73,6 +76,7 @@ final class Guardian {
 
     /// Runs a check shortly after an event (mode lists settle a moment after wake/reconnect).
     func schedule(reason: String, after seconds: Double = 1.5) {
+        if verbose { log("check scheduled in \(seconds) s [\(reason)]") }
         pending?.cancel()
         let work = DispatchWorkItem { [weak self] in self?.check(reason: reason) }
         pending = work
@@ -83,9 +87,11 @@ final class Guardian {
         setvbuf(stdout, nil, _IOLBF, 0)
         log("mac-display-guard \(appVersion) started (pid \(getpid())), \(rules.count) rule(s), poll every \(Int(pollSeconds)) s")
 
-        let callback: CGDisplayReconfigurationCallBack = { _, flags, userInfo in
+        let callback: CGDisplayReconfigurationCallBack = { display, flags, userInfo in
+            if verbose { log("event: display \(display) reconfigured, flags 0x\(String(flags.rawValue, radix: 16))") }
             guard !flags.contains(.beginConfigurationFlag), let userInfo else { return }
-            Unmanaged<Guardian>.fromOpaque(userInfo).takeUnretainedValue().schedule(reason: "display change")
+            // The event arrives once the change is complete, so a short delay is enough.
+            Unmanaged<Guardian>.fromOpaque(userInfo).takeUnretainedValue().schedule(reason: "display change", after: 0.5)
         }
         CGDisplayRegisterReconfigurationCallback(callback, Unmanaged.passUnretained(self).toOpaque())
 
